@@ -18,5 +18,25 @@ def validar_login():
 app = ctk.CTk()
 app.title("Sistema de Login da carteira")
 app.geometry('300x300')
+ 
+vcmd = app.register(apesnas_leitura)
+
+campo_user = ctk.CTkLabel(app, text='Usuário:')
+campo_user.pack(pady=5)
+
+campo_nome = ctk.CTkEntry(app, placeholder_text="Digite seu nome", validate="key", validatecommand=(vcmd, "%P"))
+campo_nome.pack(pady=5)
+
+campo_senha = ctk.CTkLabel(app, text="Senha:")
+campo_senha.pack(pady=10)
+
+campo_password = ctk.CTkEntry(app, placeholder_text="Digite sua senha", show="*" )
+campo_password.pack(pady=5)
+
+botao = ctk.CTkButton(app, text='Login', command=validar_login)
+botao.pack(pady=10)
+
+verdade = ctk.CTkLabel(app, text='')
+verdade.pack(pady=10)
 
 app.mainloop()
