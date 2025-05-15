@@ -7,9 +7,10 @@ ctk.set_appearance_mode('dark')
 
 ARQUIVO_USUARIOS = "usuarios.json"
 
-def carregar_usarios():
+def carregar_usuarios():
     if not os.path.exists(ARQUIVO_USUARIOS):
-        json.dump({}, f)
+        with open(ARQUIVO_USUARIOS, "w") as f:
+            json.dump({}, f)
     with open(ARQUIVO_USUARIOS, "r") as f:
         return json.load(f)
 
@@ -17,15 +18,15 @@ def salvar_usuarios(usuarios):
     with open(ARQUIVO_USUARIOS, "w") as f:
         json.dump(usuarios, f)
 
-def verificar_login(usuarios, senha):
-    usuarios = carregar_usarios
-    return usuarios in usuarios and usuarios[usuarios] == senha
+def verificar_login(usuario, senha):
+    usuarios = carregar_usuarios()
+    return usuario in usuarios and usuarios[usuario] == senha
 
-def cadastrar_usuarios(usuarios, senha):
-    usuarios = carregar_usarios()
-    if usuarios in usuarios:
+def cadastrar_usuario(usuario, senha):
+    usuarios = carregar_usuarios()
+    if usuario in usuarios:
         return False
-    usuarios[usuarios] = senha
+    usuarios[usuario] = senha
     salvar_usuarios(usuarios)
     return True
 
@@ -36,7 +37,7 @@ def validar_login():
     usuario = campo_nome.get()
     senha = campo_password.get()
 
-    if usuario == "Ismar" and  senha == "te amo":
+    if cadastrar_usuario(usuario, senha):
         verdade.configure(text='Login feito com sucesso!', text_color="green")
     else:
         verdade.configure(text='Login negado!', text_color="red")
@@ -45,7 +46,7 @@ def cadastrar():
     usuario = campo_nome.get()
     senha = campo_password.get()
 
-    if cadastrar_usuarios(usuario, senha):
+    if cadastrar_usuario(usuario, senha):
         verdade.configure(text='Cadastro feito!', text_color='green')
     else:
         verdade.configure(text="O usuario já existe!", text_color='orange')
@@ -71,7 +72,7 @@ campo_password.pack(pady=5)
 botoao_login = ctk.CTkButton(app, text='login', command=validar_login)
 botoao_login.pack(pady=10)
 
-botao_cadastro = ctk.CTkButton(app, text='Castrar', command=cadastrar)
+botao_cadastro = ctk.CTkButton(app, text='Cadastrar', command=cadastrar)
 botao_cadastro.pack(pady=5)
 
 verdade = ctk.CTkLabel(app, text='')
