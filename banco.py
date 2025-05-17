@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import customtkinter as ctk
 import tkinter as tk
 import json
@@ -103,3 +104,5 @@ campo_moeda_destino.pack(padx=10, pady=10)
 
 app.mainloop()
 
+=======
+>>>>>>> c7fcbb9 (Pagina de Login com titulos)
