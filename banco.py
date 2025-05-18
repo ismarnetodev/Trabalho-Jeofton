@@ -16,10 +16,12 @@ def carregar_usuarios():
 
 def salvar_usuarios(usuarios):
     with open(ARQUIVO_USUARIOS, "w") as f:
-        json.dump(usuarios, f)
+        json.dump(usuarios, f, indent=4)
 
 def verificar_login(usuario, senha):
     usuarios = carregar_usuarios()
+    print("Usuarios carregados: {}".format(usuarios))
+
     return usuario in usuarios and usuarios[usuario] == senha
 
 def cadastrar_usuario(usuario, senha):
@@ -38,13 +40,14 @@ def validar_login():
     senha = campo_password.get()
 
     if verificar_login(usuario, senha):
-        verdade.configure()
+        verdade.configure(text="Seja bem vindo {}!".format(usuario))
         campo_user.pack_forget()
         campo_nome.pack_forget()
         campo_senha.pack_forget()
         campo_password.pack_forget()
         botoao_login.pack_forget()
         botao_cadastro.pack_forget()
+        frame_login.pack_forget()
         pagina_conversor.pack(pady=20)
     else:
         verdade.configure(text='Login negado!', text_color="red")
@@ -61,11 +64,16 @@ def cadastrar():
 
 app = ctk.CTk()
 app.title("Sistema de Login da carteira")
-app.geometry('300x300')
+app.geometry('410x400')
  
 vcmd = app.register(apenas_leitura) 
 
+frame_login = ctk.CTkFrame(app)
+frame_login.pack(expand=True)
 pagina_conversor= ctk.CTkFrame(app)
+
+ctk.CTkLabel(frame_login, text='Bem vindo!', text_color='Blue', font=ctk.CTkFont(size=24, weight='bold')).pack(pady=20)
+ctk.CTkLabel(pagina_conversor, text="Selecione a moeda para converte-la!", font=ctk.CTkFont(size=15, weight='bold')).pack(pady=15)
 
 campo_user = ctk.CTkLabel(app, text='Usuário:')
 campo_user.pack(pady=5)
