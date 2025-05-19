@@ -62,6 +62,12 @@ def cadastrar():
         verdade.configure(text="O usuario já existe!", text_color='orange')
 
 
+def alternar_senha():
+    if mostrar_var.get() == 1:
+        campo_password.configure(show="")
+    else:
+        campo_password.configure(show="*")    
+
 app = ctk.CTk()
 app.title("Sistema de Login da carteira")
 app.geometry('410x400')
@@ -78,14 +84,18 @@ ctk.CTkLabel(pagina_conversor, text="Selecione a moeda para converte-la!", font=
 campo_user = ctk.CTkLabel(app, text='Usuário:')
 campo_user.pack(pady=5)
 
-campo_nome = ctk.CTkEntry(app, placeholder_text="Digite seu nome", validate="key", validatecommand=(vcmd, "%P"))
+campo_nome = ctk.CTkEntry(app, placeholder_text="Digite seu usuário", validate="key", validatecommand=(vcmd, "%P"))
 campo_nome.pack(pady=5)
 
 campo_senha = ctk.CTkLabel(app, text="Senha:")
 campo_senha.pack(pady=10)
 
-campo_password = ctk.CTkEntry(app, placeholder_text="Digite sua senha", show="*" )
+campo_password = ctk.CTkEntry(app, placeholder_text="Digite sua senha", show="*")
 campo_password.pack(pady=5)
+
+mostrar_var= tk.IntVar()
+mostrar_senha= ctk.CTkCheckBox(app, text="Mostrar Senha", variable=mostrar_var, command=alternar_senha)
+mostrar_senha.pack(padx=10, pady=10)
 
 botoao_login = ctk.CTkButton(app, text='login', command=validar_login)
 botoao_login.pack(pady=10)
