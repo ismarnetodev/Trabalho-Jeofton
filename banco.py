@@ -2,6 +2,8 @@ import customtkinter as ctk
 import tkinter as tk
 import json
 import os
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import matplotlib.pyplot as plt
 
 ctk.set_appearance_mode('dark')
 
@@ -48,6 +50,7 @@ def validar_login():
         botoao_login.pack_forget()
         botao_cadastro.pack_forget()
         frame_login.pack_forget()
+        mostrar_senha.pack_forget()
         pagina_conversor.pack(pady=20)
     else:
         verdade.configure(text='Login negado!', text_color="red")
@@ -68,10 +71,28 @@ def alternar_senha():
     else:
         campo_password.configure(show="*")    
 
+def sair_tela_cheia(event=None):
+    app.attributes('-fullscreen', False)
+
+def exibir_grafico():
+    moedas = ["USD", "EUR", "BTC"]
+    valores = [5.2, 6.7, 320000.0]
+
+    fig, ax = plt.subplots()
+    ax.bar(moedas, valores, color=['blue', 'green', 'orange'])
+    ax.set_title("Cotação atual das moedas")
+    ax.set_ylabel("Valor em BRL")
+
+    canvas = FigureCanvasTkAgg(fig, master=pagina_conversor)
+    canvas.draw()
+    canvas.get_tk_widget().pack(pady=20)
+
 app = ctk.CTk()
 app.title("Sistema de Login da carteira")
+app.attributes('-fullscreen', True)
 app.geometry('410x400')
- 
+app.bind("<Escape>", sair_tela_cheia)
+
 vcmd = app.register(apenas_leitura) 
 
 frame_login = ctk.CTkFrame(app)
@@ -112,6 +133,9 @@ texto_moeda_destino= ctk.CTkLabel(pagina_conversor, text="Selecione a moeda de d
 
 campo_moeda_origem= ctk.CTkOptionMenu(pagina_conversor, values=["USD", "BRL", "EUR", "BTC"] )
 campo_moeda_destino= ctk.CTkOptionMenu(pagina_conversor, values=["USD", "BRL", "EUR", "BTC"] )
+
+btn_grafico = ctk.CTkButton(pagina_conversor, text="Exibir grafico de preços", command=exibir_grafico)
+btn_grafico.pack(pady=10)
 
 titulo.pack(padx=10, pady=10)
 texto_moeda_origem.pack(padx=10, pady=10)
