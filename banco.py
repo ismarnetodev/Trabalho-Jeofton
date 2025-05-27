@@ -4,15 +4,22 @@ import json
 import os
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import matplotlib.pyplot as plt
+from convercoes import pegar_cotacao_moeda
 
 ctk.set_appearance_mode('dark')
+
+app = ctk.CTk()
+app.title("Sistema de Login da carteira")
+app.attributes('-fullscreen', True)
+app.geometry('410x400')
+pagina_conversor = ctk.CTkFrame(app)
 
 ARQUIVO_USUARIOS = "usuarios.json"
 
 def carregar_usuarios():
     if not os.path.exists(ARQUIVO_USUARIOS):
         with open(ARQUIVO_USUARIOS, "w") as f:
-            json.dump({}, f)
+            json.dump({}, f),
     with open(ARQUIVO_USUARIOS, "r") as f:
         return json.load(f)
 
@@ -75,29 +82,53 @@ def sair_tela_cheia(event=None):
     app.attributes('-fullscreen', False)
 
 def exibir_grafico():
-    moedas = ["USD", "EUR", "BTC"]
-    valores = [5.2, 6.7, 320000.0]
+    origem = campo_moeda_origem.get()
+    destino = campo_moeda_destino.get()
+
+    cotacao = {
+        "USD": 5.7,
+        "EUR": 6.7,
+        "BTC": 320000.0,
+        "BRL": 1.0
+    }
+
+    if origem == destino:
+        verdade.configure(text="Selecione moedas diferentes!", text_color="orange")
+        return
+
+    moedas = [origem, destino]
+    valores = [cotacao.get(origem, 0), cotacao.get(destino, 0)]
+
+    # Limpar gráfico anterior
+    for widget in pagina_conversor.winfo_children():
+        if isinstance(widget, FigureCanvasTkAgg):
+            widget.get_tk_widget().destroy()
 
     fig, ax = plt.subplots()
-    ax.bar(moedas, valores, color=['blue', 'green', 'orange'])
-    ax.set_title("Cotação atual das moedas")
+    ax.bar(moedas, valores, color=["blue", "green"])
+    ax.set_title("Cotação entre as moedas selecionadas")
     ax.set_ylabel("Valor em BRL")
+
+    for i, valor in enumerate(valores):
+        ax.text(i, valor + 0.02 * max(valores), f"R$ {valor:,.2f}", ha="center", fontsize=10)
 
     canvas = FigureCanvasTkAgg(fig, master=pagina_conversor)
     canvas.draw()
     canvas.get_tk_widget().pack(pady=20)
 
-app = ctk.CTk()
-app.title("Sistema de Login da carteira")
-app.attributes('-fullscreen', True)
-app.geometry('410x400')
-app.bind("<Escape>", sair_tela_cheia)
+def cotacao_moeda():
+    moeda_origem= campo_moeda_origem.get()
+    moeda_destino= campo_moeda_destino.get()
+    if moeda_origem and moeda_destino:
+        cotacao= pegar_cotacao_moeda(moeda_origem, moeda_destino) 
+        texto_cotacao_moeda.configure(text=f"1 {moeda_origem} = {cotacao} {moeda_destino}")   
 
+
+app.bind("<Escape>", sair_tela_cheia)
 vcmd = app.register(apenas_leitura) 
 
 frame_login = ctk.CTkFrame(app)
 frame_login.pack(expand=True)
-pagina_conversor= ctk.CTkFrame(app)
 
 ctk.CTkLabel(frame_login, text='Bem vindo!', text_color='Blue', font=ctk.CTkFont(size=24, weight='bold')).pack(pady=20)
 ctk.CTkLabel(pagina_conversor, text="Selecione a moeda para converte-la!", font=ctk.CTkFont(size=15, weight='bold')).pack(pady=15)
@@ -134,14 +165,19 @@ texto_moeda_destino= ctk.CTkLabel(pagina_conversor, text="Selecione a moeda de d
 campo_moeda_origem= ctk.CTkOptionMenu(pagina_conversor, values=["USD", "BRL", "EUR", "BTC"] )
 campo_moeda_destino= ctk.CTkOptionMenu(pagina_conversor, values=["USD", "BRL", "EUR", "BTC"] )
 
+botao_converter= ctk.CTkButton(pagina_conversor, text="Converter", command=cotacao_moeda)
+
+texto_cotacao_moeda= ctk.CTkLabel(pagina_conversor, text="")
+
 btn_grafico = ctk.CTkButton(pagina_conversor, text="Exibir grafico de preços", command=exibir_grafico)
-btn_grafico.pack(pady=10)
 
 titulo.pack(padx=10, pady=10)
 texto_moeda_origem.pack(padx=10, pady=10)
 campo_moeda_origem.pack(padx=10, pady=10)
 texto_moeda_destino.pack(padx=10, pady=10)
 campo_moeda_destino.pack(padx=10, pady=10)
+botao_converter.pack(padx=10, pady=10)
+texto_cotacao_moeda.pack(padx=10, pady=10)
+btn_grafico.pack(pady=10, padx=10)
 
 app.mainloop()
-
