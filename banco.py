@@ -34,7 +34,6 @@ def salvar_usuarios(usuarios):
 
 def verificar_login(usuario, senha):
     usuarios = carregar_usuarios()
-    print("Usuarios carregados: {}".format(usuarios))
 
     return usuario in usuarios and usuarios[usuario]["senha"] == senha
 
@@ -126,14 +125,31 @@ def exibir_grafico():
     canvas = FigureCanvasTkAgg(fig, master=scroll_frame_conversor)
     canvas.draw()
     canvas.get_tk_widget().pack(pady=20)
+         
+def atualizar_saldo():
+    usuarios = carregar_usuarios()
+    saldo = usuarios[usuario_logado]["saldo"]
+    label_saldo.configure(text=f"Saldo disponível: R$ {saldo:,.2f}")
+
+def trocar_para_conversor():
+    pagina_saldo.pack_forget()
+    scroll_frame_conversor.pack(fill="both", expand=True)
+
+def voltar_para_saldo():
+    scroll_frame_conversor.pack_forget()
+    pagina_saldo.pack(fill="both", expand=True)
 
 def cotacao_moeda():
     moeda_origem= campo_moeda_origem.get()
     moeda_destino= campo_moeda_destino.get()
 
     try:
+        
         valor= float(campo_valor.get())
-        if valor <= 0:
+        usuarios = carregar_usuarios()
+        saldo = usuarios[usuario_logado]["saldo"]
+
+        if valor <= 0 or valor > saldo:
             raise ValueError
     except ValueError:
         texto_cotacao_moeda.configure(text="Digite um valor válido!", text_color="red")
@@ -149,26 +165,11 @@ def cotacao_moeda():
             cotacao = float(cotacao)
             convertido = valor * cotacao
             texto_cotacao_moeda.configure(
-                text=f"{valor:.2f} {moeda_origem} = {convertido:.2f} {moeda_destino}", 
+                text=f"{valor:.2f} {moeda_origem} = {convertido:.3f} {moeda_destino}", 
                 text_color="white"
             )
         except ValueError as e:
-            texto_cotacao_moeda.configure(text=f"Erro ao converter: {str(e)}", text_color="red")     
-         
-
-def atualizar_saldo():
-    usuarios = carregar_usuarios()
-    saldo = usuarios[usuario_logado]["saldo"]
-    label_saldo.configure(text=f"Saldo disponível: R$ {saldo:,.2f}")
-
-def trocar_para_conversor():
-    pagina_saldo.pack_forget()
-    scroll_frame_conversor.pack(fill="both", expand=True)
-
-def voltar_para_saldo():
-    scroll_frame_conversor.pack_forget()
-    pagina_saldo.pack(fill="both", expand=True)
-
+            texto_cotacao_moeda.configure(text=f"Erro ao converter: {str(e)}", text_color="red") 
 
 app.bind("<Escape>", sair_tela_cheia)
 vcmd = app.register(apenas_leitura) 
