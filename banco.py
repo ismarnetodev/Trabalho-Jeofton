@@ -96,8 +96,9 @@ def exibir_grafico():
     cotacao = {
         "USD": 5.7,
         "EUR": 6.7,
-        "BTC": 320000.0,
-        "BRL": 1.0
+        "ARS": 209.96,
+        "BRL": 1.0,
+        "CAD": 0.24,
     }
 
     if origem == destino:
@@ -214,8 +215,8 @@ titulo= ctk.CTkLabel(scroll_frame_conversor, text="Conversor de moedas")
 texto_moeda_origem= ctk.CTkLabel(scroll_frame_conversor, text="Selecione a moeda de origem")
 texto_moeda_destino= ctk.CTkLabel(scroll_frame_conversor, text="Selecione a moeda de destino")
 
-campo_moeda_origem= ctk.CTkOptionMenu(scroll_frame_conversor, values=["USD", "BRL", "EUR", "BTC"] )
-campo_moeda_destino= ctk.CTkOptionMenu(scroll_frame_conversor, values=["USD", "BRL", "EUR", "BTC"] )
+campo_moeda_origem= ctk.CTkOptionMenu(scroll_frame_conversor, values=["BRL"] )
+campo_moeda_destino= ctk.CTkOptionMenu(scroll_frame_conversor, values=["USD", "BRL", "EUR", "ARS", "CAD"] )
 
 texto_valor = ctk.CTkLabel(scroll_frame_conversor, text="Digite o valor a ser convertido: ")
 
