@@ -132,14 +132,6 @@ def atualizar_saldo():
     saldo = usuarios[usuario_logado]["saldo"]
     label_saldo.configure(text=f"Saldo disponível: R$ {saldo:,.2f}")
 
-def trocar_para_conversor():
-    pagina_saldo.pack_forget()
-    scroll_frame_conversor.pack(fill="both", expand=True)
-
-def voltar_para_saldo():
-    scroll_frame_conversor.pack_forget()
-    pagina_saldo.pack(fill="both", expand=True)
-
 def cotacao_moeda():
     moeda_origem= campo_moeda_origem.get()
     moeda_destino= campo_moeda_destino.get()
@@ -166,7 +158,7 @@ def cotacao_moeda():
             cotacao = float(cotacao)
             convertido = valor * cotacao
             texto_cotacao_moeda.configure(
-                text=f"{valor:.2f} {moeda_origem} = {convertido:.3f} {moeda_destino}", 
+                text=f"{valor:.2f} {moeda_origem} = {convertido:.2f} {moeda_destino}", 
                 text_color="white"
             )
         except ValueError as e:
@@ -209,8 +201,6 @@ verdade.pack(pady=10)
 label_saldo = ctk.CTkLabel(pagina_saldo, text="")
 label_saldo.pack(pady=20)
 
-btn_voltar = ctk.CTkButton(scroll_frame_conversor, text="Voltar", command=voltar_para_saldo)
-btn_voltar.pack(pady=10)
 
 titulo= ctk.CTkLabel(scroll_frame_conversor, text="Conversor de moedas")
 texto_moeda_origem= ctk.CTkLabel(scroll_frame_conversor, text="Selecione a moeda de origem")
